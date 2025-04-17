@@ -1,0 +1,25 @@
+trigger: none  # Manual only
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  serviceName: product-service
+  dockerImageName: acrdevstorecluster.azurecr.io/product-service
+
+steps:
+  - script: |
+      cd ../src/$(serviceName)
+      cargo test --verbose
+    displayName: Run Rust tests
+
+  - task: Docker@2
+    displayName: Build and Push Docker image
+    inputs:
+      containerRegistry: AzureContainerRegistryConnection
+      repository: product-service
+      command: buildAndPush
+      Dockerfile: src/$(serviceName)/Dockerfile
+      buildContext: src/$(serviceName)
+      tags: |
+        $(Build.BuildId)

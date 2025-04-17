@@ -1,0 +1,26 @@
+trigger: none  # Manual only
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  serviceName: store-front
+  dockerImageName: acrdevstorecluster.azurecr.io/store-front
+
+steps:
+  - script: |
+      cd ../src/$(serviceName)
+      npm install
+      npm run test
+    displayName: Run Vue.js tests
+
+  - task: Docker@2
+    displayName: Build and Push Docker image
+    inputs:
+      containerRegistry: AzureContainerRegistryConnection
+      repository: store-front
+      command: buildAndPush
+      Dockerfile: src/$(serviceName)/Dockerfile
+      buildContext: src/$(serviceName)
+      tags: |
+        $(Build.BuildId)
