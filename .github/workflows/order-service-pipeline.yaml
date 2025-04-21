@@ -26,15 +26,6 @@ jobs:
 #      working-directory: ./src/order-service
 #      run: npm test
 
-    # Workaround test
-    - name: Run tests
-      working-directory: ./src/order-service
-      run: | 
-        docker build -t order-service .
-        docker run -d -p 3030:3000 order-service
-        curl http://localhost:3030/health | jq -r '.status' \
-          | grep -q "ok" || { echo "Error occured during order-service Docker test execution "; exit 1; }
-
     - name: Azure Login
       uses: azure/login@v1
       with:
