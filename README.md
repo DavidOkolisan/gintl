@@ -87,15 +87,11 @@ are used instead.
    AZURE_CREDENTIALS (paste json response from previous command)
    ACR_LOGIN_SERVER (e.g., myacr.azurecr.io)
    ```
-2. Getting credentials locally
-   ```
-   # Get server
-   az acr show --name <acr-name> --query loginServer --output tsv
-   # Get ACR username and pwd
-   az acr credential show --name <acr-name> --query username -o tsv
-   az acr credential show --name <acr-name> --query passwords[0].value -o tsv
-   ```
-3. Use pipelines defined in cicd directory
+3. Execute pipeliens under git repo -> Actions -> Select pipeline on the left -> Run workflow
+4. Check if images successfully uploaded to ACR by checking repositories on your ACR cluster page or by running
+```
+az acr repository list --name <your-acr-name> --output table
+```
 
 ### TBD - Helm charts setup
 
