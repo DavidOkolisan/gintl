@@ -32,5 +32,5 @@ APP_ID=$(echo $data | jq -r '.appId')
 # 3. Assign AKS permissions
 az role assignment create \
   --assignee "$APP_ID" \
-  --role "Azure Kubernetes Service Cluster User Role" \
+  --role "Azure Kubernetes Service Cluster Admin Role" \
   --scope /subscriptions/$SUB_ID/resourceGroups/$RG_NAME

@@ -19,32 +19,18 @@
 
 RG_NAME="dev-rg"
 SUB_ID=$(az account show --query id --output tsv)
+SP_NAME="github-deploy-sp"
+ACR_NAME="acrdevstorecluster"
+AKS_NAME="dev-store-cluster"
 
-# 2. Create SPN with limited ACR + AKS access
 SP_JSON=$(az ad sp create-for-rbac \
-  --name cicd-acr-push \
-  --role AcrPush \
-  --scopes /subscriptions/$SUB_ID/resourceGroups/$RG_NAME \
-  --output json)
+    --name "$SP_NAME" \
+    --scope /subscriptions/$SUB_ID/resourceGroups/$RG_NAME \
+    --role Contributor \
+    --json-auth)
 
-# Extract fields
-CLIENT_ID=$(echo "$SP_JSON" | jq -r .appId)
-CLIENT_SECRET=$(echo "$SP_JSON" | jq -r .password)
-TENANT_ID=$(echo "$SP_JSON" | jq -r .tenant)
-SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-
-# Output full SDK Auth JSON
-cat <<EOF
-{
-  "clientId": "$CLIENT_ID",
-  "clientSecret": "$CLIENT_SECRET",
-  "subscriptionId": "$SUBSCRIPTION_ID",
-  "tenantId": "$TENANT_ID",
-  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
-  "resourceManagerEndpointUrl": "https://management.azure.com/",
-  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
-  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
-  "galleryEndpointUrl": "https://gallery.azure.com/",
-  "managementEndpointUrl": "https://management.core.windows.net/"
-}
-EOF
+# === Output credentials ===
+echo ""
+echo "✅ DONE! Paste the following into your GitHub secret 'AZURE_CREDENTIALS':"
+echo ""
+echo "$SP_JSON" | jq
