@@ -1,14 +1,14 @@
 #!/bin/bash
 # ================================================
-# Script Name: spn_setup.sh
-# Description: Setup service principal used for CI/CD pipeline
+# Script Name: azure_devops_spn_setup.sh
+# Description: Setup service principal used for CI/CD pipeline for azure devops
 # Author: David Okolisan
 # Version: 1.0.0
 # Last Updated: 2025-04-14
 # ================================================
 #
 # Usage:
-#   ./spn_setup.sh
+#   ./azure_devops_spn_setup.sh
 #
 # Dependencies:
 #   - az login
@@ -22,7 +22,7 @@ SUB_ID=$(az account show --query id --output tsv)
 
 # 2. Create SPN with limited ACR + AKS access
 data=$(az ad sp create-for-rbac \
-  --name "aks-store-demo-spn" \
+  --name "cicd-acr-push" \
   --role "AcrPush" \
   --scopes /subscriptions/$SUB_ID/resourceGroups/$RG_NAME)
 

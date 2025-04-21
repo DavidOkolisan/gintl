@@ -21,7 +21,7 @@ RG_NAME="dev-rg"
 SUB_ID=$(az account show --query id --output tsv)
 
 # Get appId
-appId=$(az ad sp list --query "[?contains(displayName, 'aks-store-demo-spn')].appId" -o tsv)
+appId=$(az ad sp list --query "[?contains(displayName, 'cicd-acr-push')].appId" -o tsv)
 
 # Delete spn
 az ad sp delete --id $appId

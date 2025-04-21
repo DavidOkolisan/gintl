@@ -80,10 +80,7 @@ offers more flexibility (next section)
 are used instead.
 
 ### Git Actions
-1. Get credential needed for git actions 
-```
-az ad sp create-for-rbac --name github-push-acr --sdk-auth
-```
+1. Get credential needed for git actions `./git_actions_spn_setup.sh`
 2. Configure secrets for Git Actions
    ```
    Go to Repo Settings > Secrets > Actions and add:

@@ -42,11 +42,11 @@ jobs:
       working-directory: ./src/store-front
       run: |
         COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-        IMAGE_TAG="$ACR_NAME/store-front:${COMMIT_SHA}"
+        IMAGE_TAG="${{ secrets.ACR_LOGIN_SERVER }}/store-front:${COMMIT_SHA}"
 
         # Tag with both unique version + latest
-        docker build -t $IMAGE_TAG -t $ACR_NAME/store-front:latest ./src/store-front
+        docker build -t $IMAGE_TAG -t ${{ secrets.ACR_LOGIN_SERVER }}/store-front:latest ./src/store-front
 
         # Push both
         docker push $IMAGE_TAG
-        docker push $ACR_NAME/store-front:latest
+        docker push ${{ secrets.ACR_LOGIN_SERVER }}/store-front:latest
