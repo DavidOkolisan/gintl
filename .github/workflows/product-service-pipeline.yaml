@@ -34,11 +34,11 @@ jobs:
       working-directory: ./src/product-service
       run: |
         COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-        IMAGE_TAG="$ACR_NAME/product-service:${COMMIT_SHA}"
+        IMAGE_TAG="${{ secrets.ACR_LOGIN_SERVER }}/product-service:${COMMIT_SHA}"
 
         # Tag with both unique version + latest
-        docker build -t $IMAGE_TAG -t $ACR_NAME/product-service:latest ../../src/product-service
+        docker build -t $IMAGE_TAG -t ${{ secrets.ACR_LOGIN_SERVER }}/product-service:latest ../../src/product-service
 
         # Push both
         docker push $IMAGE_TAG
-        docker push $ACR_NAME/product-service:latest
+        docker push ${{ secrets.ACR_LOGIN_SERVER }}/product-service:latest
