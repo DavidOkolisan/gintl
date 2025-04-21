@@ -15,6 +15,7 @@
 #   - az login
 # ================================================
 
+# Variables are hardcoded here, of course various kind of setup can be done around them
 RG_NAME="dev-rg"
 STORAGE_ACCOUNT_NAME="devstoredemo5a815f"
 CONTAINER_NAME="dev-store-demo-container-tfstate"

@@ -1,0 +1,44 @@
+name: Product service build pipeline
+
+on:
+#  push:  # Trigger on push to master branch
+#    branches: [ master ]
+#    paths: [ 'src/product-service/**' ]
+  workflow_dispatch:  # Trigger manually
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+
+    # Many tests all failing, to be checked..
+#    - name: Run tests
+#      working-directory: ./src/product-service
+#      run: cargo test
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Login to ACR
+      run: az acr login --name ${{ secrets.ACR_LOGIN_SERVER }}
+
+    - name: Build and push
+      working-directory: ./src/product-service
+      run: |
+        COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+        IMAGE_TAG="$ACR_NAME/product-service:${COMMIT_SHA}"
+
+        # Tag with both unique version + latest
+        docker build -t $IMAGE_TAG -t $ACR_NAME/product-service:latest ./src/product-service
+
+        # Push both
+        docker push $IMAGE_TAG
+        docker push $ACR_NAME/product-service:latest

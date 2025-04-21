@@ -1,0 +1,52 @@
+name: Store front service build pipeline
+
+on:
+#  push:  # Trigger on push to master branch
+#    branches: [ master ]
+#    paths: [ 'src/store-front/**' ]
+  workflow_dispatch:  # Trigger manually
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    # Tests should be implemented for each app
+#    - name: Install dependencies
+#      working-directory: ./src/store-front
+#      run: npm install
+#
+#    - name: Run tests
+#      working-directory: ./src/store-front
+#      run: npm run test:unit
+#
+#    - name: Build production assets
+#      working-directory: ./src/store-front
+#      run: npm run build
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Login to ACR
+      run: az acr login --name ${{ secrets.ACR_LOGIN_SERVER }}
+
+    - name: Build and push
+      working-directory: ./src/store-front
+      run: |
+        COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+        IMAGE_TAG="$ACR_NAME/store-front:${COMMIT_SHA}"
+
+        # Tag with both unique version + latest
+        docker build -t $IMAGE_TAG -t $ACR_NAME/store-front:latest ./src/store-front
+
+        # Push both
+        docker push $IMAGE_TAG
+        docker push $ACR_NAME/store-front:latest
