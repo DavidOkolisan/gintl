@@ -294,8 +294,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: store-front.example.com
-    http:
+  - http:
       paths:
       - path: /
         pathType: Prefix
@@ -304,3 +303,4 @@ spec:
             name: store-front
             port:
               number: 80
+#    host: store-front.example.com

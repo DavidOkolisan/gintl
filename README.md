@@ -81,23 +81,38 @@ are used instead.
 
 ### Git Actions
 1. Get credential needed for git actions `./git_actions_spn_setup.sh`
-2. Configure secrets for Git Actions
+2. Configure secrets for Git Actions (credentials are mandatory, resource names not)
    ```
    Go to Repo Settings > Secrets > Actions and add:
    AZURE_CREDENTIALS (paste json response from previous command)
-   ACR_LOGIN_SERVER (e.g., myacr.azurecr.io)
+   ACR_LOGIN_SERVER (ie. myacr.azurecr.io)
+   AKS_RESOURCE_GROUP (ie dev-rg)
+   AKS_CLUSTER_NAME (ie dev-store-cluster)
    ```
 3. Execute pipeliens under git repo -> Actions -> Select pipeline on the left -> Run workflow
 4. Check if images successfully uploaded to ACR by checking repositories on your ACR cluster page or by running
 ```
 az acr repository list --name <your-acr-name> --output table
 ```
-5. 
+5. Get nginx external-ip, by founding it on you aks resource page or by executing command
+```
+# Get <EXTERNAL-IP>
+kubectl get svc --all-namespaces --field-selector spec.type=LoadBalancer
+```
+6. Access it via host name in nginx setup in [k8s config file][./k8s/main.yaml]
+```
+# in this case local hosts file update is required or k8s dns setup
+sudo nano /etc/hosts
+# add following line
+<EXTERNAL-IP> store-front.example.com
+```
+or remove host from config file and just access it by <EXTERNAL-IP>
 
 ### TBD - Helm charts setup
 
-Further improvements
-1. Implement multi account/environment support with coresponding cicd pipelines per environment
-2. Tighten security rules and bastion access to specific network
-3. Apps are missing test cases or test are failing, so for each app testing should be implemented and
+# Further improvements
+1. Implement cicd for infrastructure/terraform setup
+2. Implement multi account/environment support with coresponding cicd pipelines per environment
+3. Tighten security rules and bastion access to specific network
+4. Apps are missing test cases or test are failing, so for each app testing should be implemented and
 and documented in order to be performed while building images
