@@ -25,5 +25,4 @@ jobs:
 
       - name: Deploy to AKS
         run: |
-          ls -la
           kubectl apply -f ./k8s/main.yaml
