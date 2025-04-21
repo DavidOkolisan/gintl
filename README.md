@@ -92,6 +92,7 @@ are used instead.
 ```
 az acr repository list --name <your-acr-name> --output table
 ```
+5. 
 
 ### TBD - Helm charts setup
 
