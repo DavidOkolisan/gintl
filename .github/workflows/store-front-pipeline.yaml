@@ -45,7 +45,7 @@ jobs:
         IMAGE_TAG="${{ secrets.ACR_LOGIN_SERVER }}/store-front:${COMMIT_SHA}"
 
         # Tag with both unique version + latest
-        docker build -t $IMAGE_TAG -t ${{ secrets.ACR_LOGIN_SERVER }}/store-front:latest ./src/store-front
+        docker build -t $IMAGE_TAG -t ${{ secrets.ACR_LOGIN_SERVER }}/store-front:latest ../../src/store-front
 
         # Push both
         docker push $IMAGE_TAG

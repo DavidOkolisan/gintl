@@ -37,7 +37,7 @@ jobs:
         IMAGE_TAG="$ACR_NAME/product-service:${COMMIT_SHA}"
 
         # Tag with both unique version + latest
-        docker build -t $IMAGE_TAG -t $ACR_NAME/product-service:latest ./src/product-service
+        docker build -t $IMAGE_TAG -t $ACR_NAME/product-service:latest ../../src/product-service
 
         # Push both
         docker push $IMAGE_TAG
