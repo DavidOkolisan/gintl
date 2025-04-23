@@ -50,9 +50,9 @@ start() {
 
   # Build k8s resources
   cp "./k8s/main.yaml" .
-  sed -i "" "s#^\( *image:\) *ghcr.io/azure-samples/aks-store-demo/order-service:latest\$#\1 order-service:latest\n        imagePullPolicy: Never#g" main.yaml
-  sed -i "" "s#^\( *image:\) *ghcr.io/azure-samples/aks-store-demo/product-service:latest\$#\1 product-service:latest\n        imagePullPolicy: Never#g" main.yaml
-  sed -i "" "s#^\( *image:\) *ghcr.io/azure-samples/aks-store-demo/store-front:latest\$#\1 store-front:latest\n        imagePullPolicy: Never#g" main.yaml
+  sed -i "" "s#^\( *image:\) *acrdevstorecluster.azurecr.io/order-service:latest\$#\1 order-service:latest\n        imagePullPolicy: Never#g" main.yaml
+  sed -i "" "s#^\( *image:\) *acrdevstorecluster.azurecr.io/product-service:latest\$#\1 product-service:latest\n        imagePullPolicy: Never#g" main.yaml
+  sed -i "" "s#^\( *image:\) *acrdevstorecluster.azurecr.io/store-front:latest\$#\1 store-front:latest\n        imagePullPolicy: Never#g" main.yaml
   sed -i "" "s#^\( *-\ host:\) *store-front.example.com\$#\1 localhost#g" main.yaml
   kubectl apply -f main.yaml
 

@@ -116,3 +116,12 @@ or remove host from config file and just access it by <EXTERNAL-IP>
 3. Tighten security rules and bastion access to specific network
 4. Apps are missing test cases or test are failing, so for each app testing should be implemented and
 and documented in order to be performed while building images
+
+# Cleanup kubectl (optional)
+1. Switch to minikube context `kubectl config use-context minikube`
+2. Get contexts `kubectl config get-contexts`
+3. Delete specific context(name usually is the same as cluster name) `kubectl config delete-context ${aks_cluster_name}`
+4. Get clusters `kubectl config get-clusters`
+5. Delete specific cluster `kubectl config delete-cluster ${aks_cluster_name}`
+6. Get users `kubectl config get-users`
+7. Unset user `kubectl config unset users.clusterUser_${aks_resource_group}_${aks_cluster_name}`
