@@ -16,7 +16,8 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: store-front
-        image: store-front:latest
+        image: "{{ .Values.storeFront.image.repository }}:{{ .Values.storeFront.image.tag }}"
+        imagePullPolicy: {{ .Values.orderService.image.pullPolicy }}
         ports:
         - containerPort: 8080
           name: store-front
@@ -26,12 +27,7 @@ spec:
         - name: VUE_APP_PRODUCT_SERVICE_URL
           value: "http://product-service:3002/"
         resources:
-          requests:
-            cpu: 1m
-            memory: 200Mi
-          limits:
-            cpu: 1000m
-            memory: 512Mi
+          {{- toYaml .Values.storeFront.resources | nindent 10 }}
         startupProbe:
           httpGet:
             path: /health

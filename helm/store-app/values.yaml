@@ -145,12 +145,46 @@ rabbitmq:
 orderService:
   replicaCount: 1
   image:
-    repository: order-service
+    repository: acrdevstorecluster.azurecr.io/order-service
     tag: latest
+    pullPolicy: "IfNotPresent"
   resources:
-    limits:
-      cpu: 75m
-      memory: 128Mi
     requests:
       cpu: 1m
       memory: 50Mi
+    limits:
+      cpu: 75m
+      memory: 128Mi
+
+# Order Service configuration
+productService:
+  replicaCount: 1
+  image:
+    repository: acrdevstorecluster.azurecr.io/product-service
+    tag: latest
+    pullPolicy: "IfNotPresent"
+  resources:
+    requests:
+      cpu: 1m
+      memory: 1Mi
+    limits:
+      cpu: 2m
+      memory: 20Mi
+
+# Store front Service configuration
+storeFront:
+  replicaCount: 1
+  image:
+    repository: acrdevstorecluster.azurecr.io/store-front
+    tag: latest
+    pullPolicy: "IfNotPresent"
+  resources:
+    requests:
+      cpu: 1m
+      memory: 200Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+
+networkPolicies:
+  enabled: true

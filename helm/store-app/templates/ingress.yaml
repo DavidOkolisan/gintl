@@ -16,4 +16,4 @@ spec:
             name: store-front
             port:
               number: 80
-#    host: store-front.example.com
+    host: localhost

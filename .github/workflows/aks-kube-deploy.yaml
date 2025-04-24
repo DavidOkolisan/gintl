@@ -1,11 +1,11 @@
-name: Deploy to AKS
+name: Deploy to AKS using Kubernetes
 
 on:
   workflow_dispatch:
 
 jobs:
   deploy:
-    name: Deploy Apps to AKS
+    name: Deploy Apps to AKS using Kubernetes
     runs-on: ubuntu-latest
 
     steps:

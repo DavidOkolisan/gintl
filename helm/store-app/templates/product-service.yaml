@@ -16,19 +16,15 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: product-service
-        image: product-service:latest
+        image: "{{ .Values.productService.image.repository }}:{{ .Values.productService.image.tag }}"
+        imagePullPolicy: {{ .Values.orderService.image.pullPolicy }}
         ports:
         - containerPort: 3002
         env:
         - name: AI_SERVICE_URL
           value: "http://ai-service:5001/"
         resources:
-          requests:
-            cpu: 1m
-            memory: 1Mi
-          limits:
-            cpu: 2m
-            memory: 20Mi
+          {{- toYaml .Values.productService.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /health

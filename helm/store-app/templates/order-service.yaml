@@ -16,7 +16,8 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: order-service
-        image: order-service:latest
+        image: "{{ .Values.orderService.image.repository }}:{{ .Values.orderService.image.tag }}"
+        imagePullPolicy: {{ .Values.orderService.image.pullPolicy }}
         ports:
         - containerPort: 3000
         env:
@@ -33,12 +34,7 @@ spec:
         - name: FASTIFY_ADDRESS
           value: "0.0.0.0"
         resources:
-          requests:
-            cpu: 1m
-            memory: 50Mi
-          limits:
-            cpu: 75m
-            memory: 128Mi
+          {{- toYaml .Values.orderService.resources | nindent 10 }}
         startupProbe:
           httpGet:
             path: /health

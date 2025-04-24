@@ -15,12 +15,12 @@ Samples/aks-store-demo)
 
 ## Build and test
 1. Setup minikube ingress `minikube addons enable ingress`
-2. Run local environment setup `./local-test.sh start`
-3. Open minikube tunnel `sudo minikube tunnel &`
+2. Run local environment setup with mode kube or helm `./local-test.sh start ${mode}`
+3. Open minikube tunnel `minikube tunnel` in another session/terminal
 4. Execute test `./local-test.sh execute` or open `http://localhost:80` in browser
 5. Run cleanup `./local-test.sh cleanup`
-6. Kill/close minikube tunnel `kill $(ps aux | grep "sudo minikube tunnel" | grep root | awk '{print $2}')`
-**NOTE**: Minikube is know to have bugs in case you get message like
+6. Close started minikube tunnel(Ctrl+C) or kill minikube tunnel process `kill $(ps aux | grep "minikube tunnel" | awk '{print $2}')`
+**NOTE**: Minikube is known to have bugs in case you get message like
 ```
 Exiting due to TUNNEL_ALREADY_RUNNING: Another tunnel process is already running, terminate the existing instance to start a new one
 ```
@@ -109,10 +109,13 @@ sudo nano /etc/hosts
 or remove host from config file and just access it by <EXTERNAL-IP>
 
 ### TBD - Helm charts setup
+Setup referencing helm charts can be found in [helm](./helm) directory. This can be run by:
+1. Run manually `helm upgrade store-app ./store-app -f values-local.yaml --dry-run --debug`
+2. Using script `./local-test.sh start helm` (as described in [Local run section](#build-and-test))
 
 # Further improvements
 1. Implement cicd for infrastructure/terraform setup
-2. Implement multi account/environment support with coresponding cicd pipelines per environment
+2. Implement multi account/environment support with corresponding cicd pipelines per environment
 3. Tighten security rules and bastion access to specific network
 4. Apps are missing test cases or test are failing, so for each app testing should be implemented and
 and documented in order to be performed while building images

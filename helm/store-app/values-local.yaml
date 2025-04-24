@@ -1,0 +1,17 @@
+orderService:
+  image:
+    repository: order-service
+    tag: latest
+    pullPolicy: "Never"
+
+productService:
+  image:
+    repository: product-service
+    tag: latest
+    pullPolicy: "Never"
+
+storeFront:
+  image:
+    repository: store-front
+    tag: latest
+    pullPolicy: "Never"

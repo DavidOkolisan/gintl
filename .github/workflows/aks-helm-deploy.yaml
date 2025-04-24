@@ -1,0 +1,40 @@
+name: Deploy to AKS using Helm
+
+on:
+  workflow_dispatch:
+
+env:
+  HELM_CHART: ./store-app
+
+jobs:
+  deploy:
+    name: Deploy Apps to AKS using Helm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set AKS context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.AKS_RESOURCE_GROUP }}
+          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: '3.17.2'
+
+      - name: Deploy to AKS
+        run: |
+          helm upgrade --install store-app $HELM_CHART \
+            --namespace production \
+            --create-namespace \
+            --atomic \
+            --wait

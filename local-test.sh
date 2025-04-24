@@ -18,22 +18,23 @@
 
 # Colors for output
 RED='\033[0;31m'
-GREEN='\033[0;32m'
+GREEN='\033[1;32m'
+BOLD='\033[1;37m'
+YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 show_help() {
-  cat <<EOF
-Usage: $0 [command]
+  echo -e "${BOLD}Usage:${NC} $0 [command] [options]\n"
 
-Available commands:
-  start     - Start test
-  cleanup   - Cleanup resources
-  --help    - Show this help message
+  echo -e "${BOLD}Available commands:${NC}"
+  echo -e "  ${GREEN}start${NC}    - Start local test environment"
+  echo -e "  ${GREEN}cleanup${NC} - Cleanup all test resources"
+  echo -e "  ${GREEN}--help${NC}  - Show this help message\n"
 
-Examples:
-  $0 start     # Initialize test setup
-  $0 cleanup   # Tear down test environment
-EOF
+  echo -e "${BOLD}Examples:${NC}"
+  echo -e "  ${YELLOW}$0 start helm${NC}            # Start helm setup"
+  echo -e "  ${YELLOW}$0 execute${NC}               # Execute local test"
+  echo -e "  ${YELLOW}$0 cleanup${NC}               # Remove test environment"
 }
 
 start() {
@@ -42,12 +43,31 @@ start() {
   eval $(minikube -p minikube docker-env)
 
   # Build images
+  build_images
+
+  if [[ "$1" == "helm" ]]; then
+    start_helm
+  elif [[ "$1" == "kube"  ]]; then
+    start_kubernetes
+  else
+    echo -e "${RED}Error occurred while starting test environment...${NC}" && cleanup
+  fi
+}
+
+build_images() {
   SERVICES=("order-service" "product-service" "store-front")
   for SERVICE in "${SERVICES[@]}"; do
     echo "Building $SERVICE..."
     docker build -t $SERVICE ./src/$SERVICE
   done
+}
 
+start_helm() {
+  local chart="store-app"
+  helm install $chart ./helm/$chart --values ./helm/$chart/values-local.yaml
+}
+
+start_kubernetes() {
   # Build k8s resources
   cp "./k8s/main.yaml" .
   sed -i "" "s#^\( *image:\) *acrdevstorecluster.azurecr.io/order-service:latest\$#\1 order-service:latest\n        imagePullPolicy: Never#g" main.yaml
@@ -68,6 +88,7 @@ start() {
     sleep 10
     ((attempt++))
   done
+
   echo -e "${RED}Error occurred while starting test environment...${NC}" && cleanup
 }
 
@@ -105,22 +126,29 @@ cleanup() {
   echo -e "\n${RED}****************************\nCleaning up...\n****************************${NC}"
 
   # Delete k8s resources
-  kubectl delete -f main.yaml
+  cleanup_kubernetes
 
   # Cleanup minikube docker daemon images
   eval $(minikube -p minikube docker-env)
   docker rmi store-front product-service order-service -f
 
-  # Remove temp manifest file
-  rm ./main.yaml
-
   # Role back to local daemon
   eval $(minikube docker-env -u)
 }
 
+cleanup_kubernetes() {
+  if helm status store-app &>/dev/null; then
+    helm uninstall store-app
+  else
+    kubectl delete -f main.yaml
+    # Remove temp manifest file
+    rm ./main.yaml
+  fi
+}
+
 case "$1" in
   --start|-s|start)
-    start
+    start $2
     ;;
   --cleanup|-c|cleanup)
     cleanup

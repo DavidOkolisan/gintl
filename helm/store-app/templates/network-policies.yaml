@@ -1,0 +1,17 @@
+{{- if .Values.networkPolicies.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: store-front-policy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: store-front
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/component: order-service
+    ports:
+      - port: 8080
+{{- end }}
